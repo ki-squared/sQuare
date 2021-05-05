@@ -46,7 +46,8 @@ class Header extends Component {
     return (
       <div>
         <Navbar>
-          <Navbar.Brand href="/">Today I Learned</Navbar.Brand>
+          <Image src="./img/logo-small.png" fluid />
+          <Navbar.Brand className="logo-text" href="/">sQuare</Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
             {/* <NavLink to="/mypage">
