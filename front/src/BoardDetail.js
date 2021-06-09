@@ -48,13 +48,6 @@ class BoardDetail extends Component {
     const marginBottom = {
       marginBottom: 5
     };
-    let Comments = [];
-    let setComments = []; 
-    
-
-    const refreshFunction = (newComment) => {
-      setComments(Comments.concat(newComment));
-    };
 
     axios
       .post("http://localhost:8080/board/detail", send_param)
@@ -79,7 +72,7 @@ class BoardDetail extends Component {
                   </tr>
                 </tbody>
               </Table>
-              <Comment postId = {this.props.location.query._id} commentList={Comments} refreshFunction={refreshFunction}/>
+              <Comment postId={this.props.location.query._id}></Comment>
               <div>
                 <NavLink
                   to={{
@@ -118,13 +111,6 @@ class BoardDetail extends Component {
       .catch(err => {
         console.log(err);
       });
-
-      axios.post("http://localhost:8080/board/detail", send_param)
-        .then((response) => {
-          if(response.data.success) {
-            setComments(response.data.comments);
-          }
-        })
   };
 
   //onClick={this.getBoard.bind(null,this.props._id)}

@@ -1,26 +1,25 @@
 const express = require("express");
+const Comment = require("../schemas/comment");
 const router = express.Router();
-const Board = require("../schemas/board");
 
-router.post("/detail", (req, res) => {
-    const comment = new Comment(req.body);
-    comment.save((err, comment) => {
-        if(err) return res.json({success: false, err});
 
-        Comment.find({_id: comment._id})
-            .exec((err, result) => {
-                if(err) return res.json({success: false, err});
-                res.status(200).json({success: true, result});
-            });
-    });
-});
+router.post("/write", async (req, res) => {
+    try {
+      let obj;
+  
+      obj = {
+        postId: req.body.postId,
+        content: req.body.content
+      };
+  
+      const comment = new Comment(obj);
+      await comment.save();
+      res.json({ message: "댓글이 업로드 되었습니다." });
+    } catch (err) {
+      console.log(err);
+      res.json({ message: false });
+    }
+  });
 
-router.post("/detail", (req, res) => {
-    Comment.find({postId: req.body.boardId})
-    .exec((err, comments) => {
-        if(err) return res.status(400).send(err);
-        res.status(200).json({success: true, comments});
-    });
-});
 
 module.exports = router;
