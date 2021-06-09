@@ -58,17 +58,10 @@ class Comment extends Component{
   render() {
     const marginBottom = {
         marginBottom: 5
-      };
+    };
 
     return (
         <div>
-            <br />
-            <p>댓글</p>
-            <hr />
-
-            {/* Comment Lists */}
-            {/* Root Comment Form */}
-
             <form style={{ display: 'flex', marginBottom: '30px' }} onSubmit={this.writeComment}>
                 <textarea
                 style={{ width: '100%', borderRadius: '5px' }}

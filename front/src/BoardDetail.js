@@ -3,6 +3,7 @@ import { Table, Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import Comment from './Comment';
+import CommentList from './CommentList';
 axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
 
@@ -72,6 +73,7 @@ class BoardDetail extends Component {
                   </tr>
                 </tbody>
               </Table>
+              <CommentList postId={this.props.location.query._id}></CommentList>
               <Comment postId={this.props.location.query._id}></Comment>
               <div>
                 <NavLink

@@ -2,6 +2,16 @@ const express = require("express");
 const Comment = require("../schemas/comment");
 const router = express.Router();
 
+router.post("/getCommentList", async (req, res) => {
+    try {
+      const postId = req.body.postId;
+      const comment = await Comment.find({ postId: postId })
+      res.json({ list: comment });
+    } catch (err) {
+      console.log(err);
+      res.json({ message: false });
+    }
+  });
 
 router.post("/write", async (req, res) => {
     try {
