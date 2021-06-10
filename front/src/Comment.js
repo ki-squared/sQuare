@@ -44,7 +44,7 @@ class Comment extends Component{
       .then(returnData => {
         if (returnData.data.message) {
           alert(returnData.data.message);
-          window.location.href = "/";
+          window.history.go();
         } else {
           alert("댓글 쓰기 실패");
         }

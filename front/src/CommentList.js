@@ -38,11 +38,8 @@ class CommentList extends Component{
             let commentList;
             if (returnData.data.list.length > 0) {
               const comments = returnData.data.list;
-              console.log(comments);
               commentList = comments.map(item=>(
-                  <CommentRow>
-                    content={item.content}
-                  </CommentRow>
+                  <CommentRow key={item.content} content={item.content}></CommentRow>
               ));
               console.log(commentList);
               this.setState({
