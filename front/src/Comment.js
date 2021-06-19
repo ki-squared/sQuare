@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, {Component} from 'react';
 import { Button } from "react-bootstrap";
 import {} from "jquery.cookie";
+import Loading from "./loading";
 axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
 
@@ -9,7 +10,7 @@ class Comment extends Component{
 
   constructor(props) {
     super(props);
-    this.state = {value: ''};
+    this.state = {value: '', loading: false};
 
     this.handleChange = this.handleChange.bind(this);
   }
@@ -27,6 +28,7 @@ class Comment extends Component{
 
     if (commentContent=== undefined || commentContent === "") {
       alert("댓글 내용을 입력 해주세요.");
+      this.setState({ loading: false });
       return;
     } else {
       console.log(commentContent, postId);
@@ -42,16 +44,39 @@ class Comment extends Component{
       .post(url, send_param)
       //정상 수행
       .then(returnData => {
-        if (returnData.data.message) {
-          alert(returnData.data.message);
-          window.history.go();
+        if(returnData => returnData.data.isViolence) {
+          if(window.confirm(returnData.data.message)) {
+            axios
+              .post('http://localhost:8080/comment/save', send_param)
+              .then(returnData => {
+                alert(returnData.data.message);
+                window.history.go();
+              })
+              .catch(err=> {
+                alert("글쓰기 실패");
+                this.setState({ loading: false });
+              })
+          } else this.setState({loading: false});
+        } else if(returnData.data.message != null) {
+          axios
+          .post('http://localhost:8080/comment/save', send_param)
+          .then(returnData => {
+            alert(returnData.data.message);
+            window.history.go();
+          })
+          .catch(err => {
+            alert("글쓰기 실패");
+            this.setState({ loading: false });
+          })
         } else {
-          alert("댓글 쓰기 실패");
+          alert("글쓰기 실패");
+            this.setState({ loading: false });
         }
       })
       //에러
       .catch(err => {
         console.log(err);
+        this.setState({ loading: false });
       });
   };
 
@@ -60,6 +85,7 @@ class Comment extends Component{
         marginBottom: 5
     };
 
+    const { value, loading } = this.state;
     return (
         <div>
             <form style={{ display: 'flex', marginBottom: '30px' }} onSubmit={this.writeComment}>
@@ -70,8 +96,8 @@ class Comment extends Component{
                 placeholder="댓글을 작성해 주세요"
                 />
                 <br />
-                <Button block style={{marginBottom, width: '20%'}} onClick={this.writeComment}>
-                    댓글 달기
+                <Button block style={{marginBottom, width: '20%'}} onClick={ () => { this.setState({ loading: true }, this.writeBoard) }}>
+                  <div className="loading"> {loading ? <p>댓글 검사중..<Loading /></p> : "저장하기"} </div>
                 </Button>
             </form>
         </div>
