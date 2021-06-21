@@ -8,19 +8,17 @@ const fs = require('fs');
 const { title } = require("process");
 
 var command = 'python';
-var args = ['./korean-hate-speech-koelectra/main.py', '--model_name_or_path', './korean-hate-speech-koelectra/model', '--model_dir', './korean-hate-speech-koelectra/model', '--sQ_tfile', './temp/tfile.txt', '--sQuare'];
+var args = ['./korean-hate-speech-koelectra/main.py', '--model_name_or_path', './korean-hate-speech-koelectra/model', '--model_dir', './korean-hate-speech-koelectra/model', '--sQ_tfile', './temp/tfile.txt', '--sQuare', '--dev_file', './korean-hate-speech-koelectra/data/validate.txt'];
 
-function getContentBuffer(title, content) {
-  var contentLines = [];
-  contentLines.push(title);
-  contentLines.push('');
+function getContentBuffer(content) {
+  var contentLines = []
   content = content.replaceAll('<p>', "");
   content.replaceAll('</p>', "").split('\n').forEach(element => { contentLines.push(element); });
 
   return contentLines;
 }
 
-function getSchoolViolent(title, contentLines) {
+function getSchoolViolent(contentLines) {
   var result = [];
   var tmpFile = [];
   var content = "Contents\n";
@@ -52,18 +50,18 @@ function getSchoolViolent(title, contentLines) {
 }
 
 function isSchoolViolence(obj) {
-  var tContent = obj.content.substring(0, obj.content.length - 1);
-  var contentLines = getContentBuffer(obj.title, tContent);
-  var check = getSchoolViolent(obj.title, contentLines);
+  var tContent = obj.content.substring(0, obj.content.length);
+  var contentLines = getContentBuffer(tContent);
+  var check = getSchoolViolent(contentLines);
   var ret = "주의! 스퀘어봇이 학교폭력을 감지했어요.\n\n"
   var checked = false;
   console.log(contentLines);
 
   for (var i = 0; i < check.length - 1; i += 2) {
+    console.log(check[i]);
     if (check[i] == "none,none") continue;
     if (!checked) checked = true;
 
-    if (i == 0) ret = ret.concat("제목에 문제가 있습니다.\n");
     var violence = "\n사유: ".concat(check[i]);
     violence = violence.replace(",offensive", "을 매개로 불쾌감을 줄 수 있는 표현\n");
     violence = violence.replace(",hate", "을 매개로 한 혐오 표현\n\n");
