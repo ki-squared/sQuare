@@ -16,7 +16,7 @@ class Comment extends Component{
   }
 
   handleChange(event) {
-    this.setState({value: event.target.value});
+    this.setState({value: event.target.value, loading: event.target.loading});
   }
 
   writeComment = () => {
@@ -45,7 +45,7 @@ class Comment extends Component{
       //정상 수행
       .then(returnData => {
         if(returnData => returnData.data.isViolence) {
-          if(window.confirm(returnData.data.message)) {
+          if(returnData.data.message == '') {
             axios
               .post('http://localhost:8080/comment/save', send_param)
               .then(returnData => {
@@ -56,7 +56,20 @@ class Comment extends Component{
                 alert("글쓰기 실패");
                 this.setState({ loading: false });
               })
-          } else this.setState({loading: false});
+          } else {
+            if(window.confirm(returnData.data.message)) {
+              axios
+                .post('http://localhost:8080/comment/save', send_param)
+                .then(returnData => {
+                  alert(returnData.data.message);
+                  window.history.go();
+                })
+                .catch(err=> {
+                  alert("글쓰기 실패");
+                  this.setState({ loading: false });
+                })
+            } else this.setState({loading: false});
+          }
         } else if(returnData.data.message != null) {
           axios
           .post('http://localhost:8080/comment/save', send_param)
@@ -88,7 +101,7 @@ class Comment extends Component{
     const { value, loading } = this.state;
     return (
         <div>
-            <form style={{ display: 'flex', marginBottom: '30px' }} onSubmit={this.writeComment}>
+            <form style={{ display: 'flex', marginBottom: '30px' }}>
                 <textarea
                 style={{ width: '100%', borderRadius: '5px' }}
                 onChange={this.handleChange}
@@ -96,7 +109,7 @@ class Comment extends Component{
                 placeholder="댓글을 작성해 주세요"
                 />
                 <br />
-                <Button block style={{marginBottom, width: '20%'}} onClick={ () => { this.setState({ loading: true }, this.writeBoard) }}>
+                <Button block style={{marginBottom, width: '20%'}} onClick={()=> {this.setState({loading:true}, this.writeComment)}}>
                   <div className="loading"> {loading ? <p>댓글 검사중..<Loading /></p> : "저장하기"} </div>
                 </Button>
             </form>
